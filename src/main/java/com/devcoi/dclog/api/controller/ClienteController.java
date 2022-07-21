@@ -19,5 +19,17 @@ public class ClienteController {
 	public List<Cliente> listar() {
 		return clienteRepository.findAll();
 	}
+	
+	@GetMapping("/clientes/nomeExato")
+	public List<Cliente> buscarPorNome() {
+		return clienteRepository.findByNome("João da Silva");
+	}
+
+	@GetMapping("/clientes/nomeContendo")
+	public List<Cliente> buscarPorNomeContendo() {
+		return clienteRepository.findByNomeContaining("ria");
+	}
+
+	
 
 }
