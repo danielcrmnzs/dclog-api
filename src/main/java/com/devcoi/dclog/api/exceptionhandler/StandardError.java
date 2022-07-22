@@ -1,7 +1,7 @@
 package com.devcoi.dclog.api.exceptionhandler;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +20,7 @@ public class StandardError implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Integer status;
-	private LocalDateTime dataHora;
+	private OffsetDateTime dataHora;
 	private String erro;
 
 }

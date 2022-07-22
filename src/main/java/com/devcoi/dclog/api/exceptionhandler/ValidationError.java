@@ -1,7 +1,7 @@
 package com.devcoi.dclog.api.exceptionhandler;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class ValidationError extends StandardError implements Serializable {
 		campos.add(new Campo(nome, mensagem));
 	}
 
-	public ValidationError(Integer status, LocalDateTime dataHora, String erro) {
+	public ValidationError(Integer status, OffsetDateTime dataHora, String erro) {
 		super(status, dataHora, erro);
 	}
 

@@ -1,6 +1,6 @@
 package com.devcoi.dclog.api.exceptionhandler;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -27,7 +27,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		var validationError = new ValidationError(status.value(), LocalDateTime.now(),
+		var validationError = new ValidationError(status.value(), OffsetDateTime.now(),
 				"Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.");
 
 		for (ObjectError objectError : ex.getBindingResult().getAllErrors()) {
@@ -45,7 +45,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<Object> handleService(ServiceException ex, WebRequest request) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 
-		StandardError error = new StandardError(status.value(), LocalDateTime.now(), ex.getMessage());
+		StandardError error = new StandardError(status.value(), OffsetDateTime.now(), ex.getMessage());
 
 		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
 
