@@ -1,6 +1,7 @@
 package com.devcoi.dclog.api.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.devcoi.dclog.api.model.EntregaDTO;
 import com.devcoi.dclog.domain.model.Entrega;
 import com.devcoi.dclog.domain.repository.EntregaRepository;
 import com.devcoi.dclog.domain.service.EntregaService;
@@ -31,20 +33,27 @@ public class EntregaController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Entrega solicitar(@Valid @RequestBody Entrega entrega) {
-		return entregaService.solicitarEntrega(entrega);
+	public EntregaDTO solicitar(@Valid @RequestBody Entrega entrega) {
+		return new EntregaDTO(entregaService.solicitarEntrega(entrega));
 	}
 
 	@GetMapping
-	public List<Entrega> listar() {
-		return entregaRepository.findAll();
+	public List<EntregaDTO> listar() {
+		return entregaRepository
+				.findAll()
+				.stream()
+				.map(entrega -> new EntregaDTO(entrega))
+				.collect(Collectors.toList());
+
 	}
 
 	@GetMapping("/{entregaId}")
-	public ResponseEntity<Entrega> buscar(@PathVariable Long entregaId) {
-		return entregaRepository.findById(entregaId)
-				.map(ResponseEntity::ok)
-				.orElse(ResponseEntity.notFound().build());
+	public ResponseEntity<EntregaDTO> buscar(@PathVariable Long entregaId) {
+		return entregaRepository.findById(entregaId).map(entrega -> {
+			EntregaDTO entregaDTO = new EntregaDTO(entrega);
+
+			return ResponseEntity.ok(entregaDTO);
+		}).orElse(ResponseEntity.notFound().build());
 	}
 
 }
