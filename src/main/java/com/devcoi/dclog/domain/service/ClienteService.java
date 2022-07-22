@@ -14,9 +14,14 @@ public class ClienteService {
 	@Autowired
 	private ClienteRepository clienteRepository;
 
+	public Cliente buscar(Long clienteId) {
+		return clienteRepository.findById(clienteId).orElseThrow(() -> new ServiceException("Cliente não encontrado"));
+
+	}
+
 	@Transactional
 	public Cliente salvar(Cliente cliente) {
-		
+
 		// anyMatch => Verifica se o novo cliente já existe.
 		boolean emailEmUso = clienteRepository.findByEmail(cliente.getEmail()).stream()
 				.anyMatch(clienteEncontrado -> !clienteEncontrado.equals(cliente));
