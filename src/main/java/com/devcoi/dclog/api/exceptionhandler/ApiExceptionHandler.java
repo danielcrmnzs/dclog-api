@@ -1,8 +1,6 @@
 package com.devcoi.dclog.api.exceptionhandler;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -14,31 +12,43 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import com.devcoi.dclog.domain.exception.ServiceException;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private MessageSource messageSource;
-	
+
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		List<StandardError.Campo> campos = new ArrayList<>();
+		var validationError = new ValidationError(status.value(), LocalDateTime.now(),
+				"Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.");
 
 		for (ObjectError objectError : ex.getBindingResult().getAllErrors()) {
 			String nome = ((FieldError) objectError).getField();
-			//String mensagem = objectError.getDefaultMessage();
+			// String mensagem = objectError.getDefaultMessage();
 			String mensagem = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
 
-			campos.add(new StandardError.Campo(nome, mensagem));
+			validationError.addCampo(nome, mensagem);
 		}
 
-		StandardError error = new StandardError(status.value(), LocalDateTime.now(),
-				"Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.", campos);
-		return handleExceptionInternal(ex, error, headers, status, request);
+		return handleExceptionInternal(ex, validationError, headers, status, request);
+	}
+
+	@ExceptionHandler(ServiceException.class)
+	public ResponseEntity<Object> handleService(ServiceException ex, WebRequest request) {
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+
+		StandardError error = new StandardError(status.value(), LocalDateTime.now(), ex.getMessage());
+
+		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
+
 	}
 
 }

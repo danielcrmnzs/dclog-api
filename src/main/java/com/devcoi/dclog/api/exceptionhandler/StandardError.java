@@ -1,7 +1,7 @@
 package com.devcoi.dclog.api.exceptionhandler;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,18 +12,15 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StandardError {
+public class StandardError implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private Integer status;
 	private LocalDateTime dataHora;
 	private String erro;
-	private List<Campo> campos;
-
-	@Getter
-	@AllArgsConstructor
-	public static class Campo {
-		private String nome;
-		private String mensagem;
-	}
 
 }
