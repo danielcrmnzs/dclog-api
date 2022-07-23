@@ -1,4 +1,4 @@
-package com.devcoi.dclog.assembler;
+package com.devcoi.dclog.api.assembler;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.devcoi.dclog.domain.exception.ServiceException;
+import com.devcoi.dclog.domain.exception.RNException;
 import com.devcoi.dclog.domain.model.Cliente;
 import com.devcoi.dclog.domain.repository.ClienteRepository;
 
@@ -15,7 +15,7 @@ public class ClienteService {
 	private ClienteRepository clienteRepository;
 
 	public Cliente buscar(Long clienteId) {
-		return clienteRepository.findById(clienteId).orElseThrow(() -> new ServiceException("Cliente não encontrado"));
+		return clienteRepository.findById(clienteId).orElseThrow(() -> new RNException("Cliente não encontrado"));
 
 	}
 
@@ -27,7 +27,7 @@ public class ClienteService {
 				.anyMatch(clienteEncontrado -> !clienteEncontrado.equals(cliente));
 
 		if (emailEmUso) {
-			throw new ServiceException("Já existe cliente cadastrado com este email.");
+			throw new RNException("Já existe cliente cadastrado com este email.");
 		}
 
 		return clienteRepository.save(cliente);

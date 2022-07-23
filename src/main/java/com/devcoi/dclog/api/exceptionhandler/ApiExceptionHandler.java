@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.devcoi.dclog.domain.exception.ServiceException;
+import com.devcoi.dclog.domain.exception.EntidadeNaoEncontradaException;
+import com.devcoi.dclog.domain.exception.RNException;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -41,9 +42,19 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		return handleExceptionInternal(ex, validationError, headers, status, request);
 	}
 
-	@ExceptionHandler(ServiceException.class)
-	public ResponseEntity<Object> handleService(ServiceException ex, WebRequest request) {
+	@ExceptionHandler(RNException.class)
+	public ResponseEntity<Object> handleService(RNException ex, WebRequest request) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
+
+		StandardError error = new StandardError(status.value(), OffsetDateTime.now(), ex.getMessage());
+
+		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
+
+	}
+	
+	@ExceptionHandler(EntidadeNaoEncontradaException.class)
+	public ResponseEntity<Object> handleEntidadeNaoEncontrada(EntidadeNaoEncontradaException ex, WebRequest request) {
+		HttpStatus status = HttpStatus.NOT_FOUND;
 
 		StandardError error = new StandardError(status.value(), OffsetDateTime.now(), ex.getMessage());
 
